@@ -1,0 +1,23 @@
+import cv2
+import matplotlib.pyplot as plt
+#载入原图
+img_original=cv2.imread('F:/cifar-10-batches-py/train/deer/batch_1_num_28.jpg',0)
+#全局阈值分割
+retval,img_global=cv2.threshold(img_original,90,255,cv2.THRESH_BINARY)
+retval,img_global2=cv2.threshold(img_original,127,255,cv2.THRESH_BINARY)
+#自适应阈值分割
+img_ada_mean=cv2.adaptiveThreshold(img_original,255,cv2.ADAPTIVE_THRESH_MEAN_C,cv2.THRESH_BINARY,21,0)
+img_ada_mean2=cv2.adaptiveThreshold(img_original,255,cv2.ADAPTIVE_THRESH_MEAN_C,cv2.THRESH_BINARY,21,10)
+img_ada_gaussian=cv2.adaptiveThreshold(img_original,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY,21,0)
+img_ada_gaussian2=cv2.adaptiveThreshold(img_original,255,cv2.ADAPTIVE_THRESH_GAUSSIAN_C,cv2.THRESH_BINARY,21,10)
+imgs=[img_original,img_global,img_global2,img_ada_mean,img_ada_mean2,img_ada_gaussian,img_ada_gaussian2]
+
+titles=['Original Image','Global(90)','Global(127)','Adaptive Mean','mean-C','Adaptive Guassian','gaussian-C']
+#显示图片
+for i in range(7):
+    plt.subplot(4,3,i+1)
+    plt.imshow(imgs[i],'gray')
+    plt.title(titles[i])
+    plt.xticks([])
+    plt.yticks([])
+plt.show()
