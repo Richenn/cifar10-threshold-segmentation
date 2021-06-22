@@ -1,0 +1,32 @@
+import glob
+import cv2
+import os
+import numpy as np
+
+dst_path = 'F:\cifar10dataset\dst'
+
+def get_filepath_filename_extention(fullpath):
+    import os
+
+    file_path, tempfilename = os.path.split(fullpath)
+    filename, extension = os.path.splitext(tempfilename)
+
+    return file_path, filename, extension  # 路径名 文件名 后缀名
+
+
+for filepath in glob.glob(r'F:\cifar10dataset\train\*.jpg'):
+
+    img = cv2.imread(filepath)
+    img_gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    out_min = 0
+    out_max = 255
+    in_min = np.min(img_gray)
+    in_max = np.max(img_gray)
+    a = float(out_max - out_min) / (in_max - in_min)
+    b = out_min - a * in_min
+    zgh = img_gray * a + b
+    zgh = zgh.astype(np.uint8)
+    mean_zgh = cv2.adaptiveThreshold(zgh, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 21, 10)
+
+    _,filename,_ = get_filepath_filename_extention(filepath)
+    cv2.imwrite(os.path.join(dst_path,filename + '.jpg'),mean_zgh)
